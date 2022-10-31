@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react"
-import { Outlet } from "react-router-dom"
+import React, { useEffect, useState } from "react";
+import { Outlet } from "react-router-dom";
 import Pagination from "./pagination";
 
-const AllUsers=()=>{
-  const [users,setUsers] = useState([]);
-  const [loading , setLoading] = useState(false);
+const MaleUsers = () => {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1)
   const [usersPerPage] = useState(2)
-  
+
   useEffect(() => {
     const fetchUsers = async () => {
       setLoading(true);
       try {
-        const res = await fetch("https://randomuser.me/api/?results=7");
+        const res = await fetch("https://randomuser.me/api/?results=7&gender=male");
         const data = await res.json();
         setUsers(data.results);
         console.log(users);
@@ -25,19 +25,19 @@ const AllUsers=()=>{
   }, []);
 
   if (loading) {
-    return <h1>Loading🚀🚀🚀</h1>;
-  };
+    return <h2>Loading🚀🚀🚀</h2>;
+  }
+  // get current users
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = users.slice(indexOfFirstUser , indexOfLastUser)
-
-  //switch page
+  
+  //page switch
   const paginate = (pageNumber) => setCurrentPage(pageNumber)
-
   return (
     <div>
       <div>
-        <h1>These are the lists of All users</h1>
+        <h1>These are the lists of male users</h1>
       </div>
       <br />
       <div classname="card">
@@ -53,12 +53,13 @@ const AllUsers=()=>{
             </div>
           </div>
         ))}
-        <Pagination usersPerPage={usersPerPage} totalUsers = {users.length}  paginate = {paginate}/>
+        <Pagination usersPerPage={usersPerPage} totalUsers = {users.length} paginate = {paginate}/>
       </div>
       
 
       <Outlet />
     </div>
-  )
-}
-export default AllUsers
+  );
+};
+
+export default MaleUsers

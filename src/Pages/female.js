@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
+import Pagination from "./pagination";
 
 const Female = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1)
+  const [usersPerPage] = useState(2)
+
 
   useEffect(() => {
     const fetchUsers = async () => {
       setLoading(true);
       try {
-        const res = await fetch("https://randomuser.me/api/?results=3&gender=female");
+        const res = await fetch("https://randomuser.me/api/?results=7&gender=female");
         const data = await res.json();
         setUsers(data.results);
         console.log(users);
@@ -22,14 +26,23 @@ const Female = () => {
   }, []);
 
   if (loading) {
-    return <h1>Loading</h1>;
+    return <h1>Loading🚀🚀🚀</h1>;
   }
-  return (    
-  <div>
-   <p>These are the details of female users</p>
-   <br />
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = users.slice(indexOfFirstUser , indexOfLastUser)
+
+   //page switch
+   const paginate = (pageNumber) => setCurrentPage(pageNumber)
+  
+  return (
+    <div>
+      <div>
+        <h1>These are the lists of Female users</h1>
+      </div>
+      <br />
       <div classname="card">
-        {users.map((user) => (
+        {currentUsers.map((user) => (
           <div className="card" key={user.login.uuid}>
             <img className="images" src={user.picture.medium} alt="images" />
             <div className="details">
@@ -41,9 +54,12 @@ const Female = () => {
             </div>
           </div>
         ))}
-      </div> 
-   <Outlet/>
-  </div>
+        <Pagination usersPerPage={usersPerPage} totalUsers = {users.length}  paginate = {paginate}/>
+      </div>
+      
+
+      <Outlet />
+    </div>
   
   );
 };
